@@ -10,7 +10,7 @@ SaveFile = namedtuple('SaveFile', 'save_file_name, save_file_size')
 class Remnant_File_Changer():
     def __init__(self) -> None:
         print('\nRemnant: From the files\n')
-        print('This will copy files from Gamepass to Steam')
+        print('This will copy files from Game Pass to Steam')
         print('and vice versa.')
         print('Please take care as this could mess up your saves.')
         print('\nWARNING: This will only change 1 save.\n')
@@ -123,7 +123,7 @@ class Remnant_File_Changer():
 
             case 'G':
                 self.__take_backups()
-                print('Moving to Gamepass.')
+                print('Moving to Game Pass.')
                 self.__actually_move_files(self.steam_files, self.gamepass_files)
 
             case 'Q':
@@ -133,7 +133,7 @@ class Remnant_File_Changer():
                 print('Nothing selected; not sure how we got here.')
 
     def start(self):
-        print('G to copy files to Gamepass')
+        print('G to copy files to Game Pass')
         print('S to copy files to Steam')
         print('Q to quit')
         direction = input('\nWhich direction do you want to go? ')
