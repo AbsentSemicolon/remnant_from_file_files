@@ -5,6 +5,8 @@ This is a very rudimentary script to get the job done for now. Please take care 
 
 Take manual backups if you want starting out in case something goes wrong.
 
+This was made possible by this [post](https://www.reddit.com/r/remnantgame/comments/187rfdq/transferring_save_files_from_pcsteam_to_xbox) from [spectralhunt](https://www.reddit.com/user/spectralhunt/).
+
 # Before Running
 Make sure to install Python if not already. This was developed using Python 3.12.1.
 
@@ -25,3 +27,14 @@ That's it. Once it's done you should be able to load up which ever version and p
 
 # Limitations
 This only does one game save for now. Will be working on making it so it'll do more than just one in the future.
+
+# config.ini
+Below is an explanation of what type of data or values are accepted for entries in the config.
+
+[GENERAL]
+TakeBackups = true/false
+TestImplementation = true/false
+
+[STEAM]
+SteamUserId = SteamID3
+

@@ -1,7 +1,10 @@
+from rem_config import RemConfig
+from print_statement import print_text, font_colors, font_types
+
 from pathlib import Path
 from os import path, listdir, stat
 from collections import namedtuple
-from rem_config import RemConfig
+
 from shutil import copyfile
 from datetime import datetime
 
@@ -9,11 +12,11 @@ SaveFile = namedtuple('SaveFile', 'save_file_name, save_file_size')
 
 class Remnant_File_Changer():
     def __init__(self) -> None:
-        print('\nRemnant: From the files\n')
-        print('This will copy files from Game Pass to Steam')
-        print('and vice versa.')
-        print('Please take care as this could mess up your saves.')
-        print('\nWARNING: This will only change 1 save.\n')
+        print_text('\nRemnant: From the files\n', font_colors.HEADER, font_types.BOLD)
+        print_text('This will copy files from Game Pass to Steam')
+        print_text('and vice versa.')
+        print_text('Please take care as this could mess up your saves.')
+        print_text('\nWARNING: This will only change 1 save.\n', font_colors.WARNING)
 
         self.config = RemConfig()
         self.__validate_config()
@@ -42,9 +45,9 @@ class Remnant_File_Changer():
             else:
                 raise FileNotFoundError
         except FileNotFoundError:
-            print('Could not find the folder for Remnant 2.', f'Check that {steam_folder} exists.')
+            print_text('Could not find the folder for Remnant 2.', f'Check that {steam_folder} exists.')
         except Exception as error:
-            print(error)
+            print_text(error)
 
         return save_files
 
@@ -99,18 +102,24 @@ class Remnant_File_Changer():
         return None
 
     def __take_backups(self):
-        print('Taking backups first.')
-        time = datetime.now().strftime('%Y%m%d%H%M%S')
+        if self.config.get_take_backups():
+            print_text('Taking backups first', font_colors.OKGREEN)
+            time = datetime.now().strftime('%Y%m%d%H%M%S')
 
-        for file in self.steam_files:
-            copyfile(file.save_file_name, f'{file.save_file_name}_bak_{time}')
+            for file in self.steam_files:
+                copyfile(file.save_file_name, f'{file.save_file_name}_bak_{time}')
 
-        for file in self.gamepass_files:
-            copyfile(file.save_file_name, f'{file.save_file_name}_bak_{time}')
+            for file in self.gamepass_files:
+                copyfile(file.save_file_name, f'{file.save_file_name}_bak_{time}')
+        else:
+            print_text('\nTEST: Taking backups first.', font_colors.OKGREEN)
 
     def __actually_move_files(self, source, dest):
-        for (i, source_file) in enumerate(source):
-            copyfile(source_file.save_file_name, dest[i].save_file_name)
+        if self.config.get_test_imp():
+            print_text('\nTEST: Copied files!', font_colors.OKGREEN)
+        else:
+            for (i, source_file) in enumerate(source):
+                copyfile(source_file.save_file_name, dest[i].save_file_name)
 
     def __move_files(self, direction):
         new_direction = direction.upper()
@@ -118,31 +127,33 @@ class Remnant_File_Changer():
         match new_direction:
             case 'S':
                 self.__take_backups()
-                print('Moving to Steam.')
+                print_text('Copying to Steam.')
                 self.__actually_move_files(self.gamepass_files, self.steam_files)
 
             case 'G':
                 self.__take_backups()
-                print('Moving to Game Pass.')
+                print_text('Copying to Game Pass.')
                 self.__actually_move_files(self.steam_files, self.gamepass_files)
 
             case 'Q':
                 exit()
 
             case _:
-                print('Nothing selected; not sure how we got here.')
+                print_text('Nothing selected; not sure how we got here.')
 
     def start(self):
-        print('G to copy files to Game Pass')
-        print('S to copy files to Steam')
-        print('Q to quit')
+        print_text('G to copy files to Game Pass')
+        print_text('S to copy files to Steam')
+        print_text('Q to quit')
+        if self.config.get_test_imp():
+            print_text('\nWARNING: Test mode activated.', font_colors.WARNING)
         direction = input('\nWhich direction do you want to go? ')
         self.__move_files(direction)
 
     def __validate_config(self):
         if self.config.validate_config() != True:
-            print('\nThere was a problem validating configuration.\n')
-            print('Please check the README.')
+            print_text('\nThere was a problem validating configuration.\n')
+            print_text('Please check the README.')
             exit()
 
 if __name__ == '__main__':
